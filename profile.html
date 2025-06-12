@@ -3,11 +3,35 @@
 <head>
 	<meta charset='UTF-8'>
 	<meta name='viewport' content='width=device-width, initial-scale=1.0'>
-	<title>EtherealEchoes</title>
-	<script src='[https://cdn.tailwindcss.com](https://cdn.tailwindcss.com)'></script>
+	<title>EtherealEchoes - Profile</title>
+	<script src='https://cdn.tailwindcss.com'></script>
 	<link rel='stylesheet' href='assets/css/style.css'>
 </head>
 <body class='bg-gray-100'>
-	<!-- Content for profile.html -->
+	<div class='container mx-auto p-5'>
+		<!-- Profile Header -->
+		<div class='bg-white rounded-lg shadow-md p-5 mb-5'>
+			<div class='flex items-center'>
+				<img src='uploads/default.jpg' alt='Profile Picture' id='profile-picture' class='w-20 h-20 rounded-full mr-4'>
+				<div>
+					<h1 class='text-2xl font-semibold' id='username'></h1>
+					<p class='text-gray-600' id='bio'></p>
+					<button id='edit-profile-btn' class='bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded mt-2'>Edit Profile</button>
+					<button id='follow-btn' class='bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded mt-2 ml-2 hidden'>Follow</button>
+					<button id='unfollow-btn' class='bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded mt-2 ml-2 hidden'>Unfollow</button>
+				</div>
+			</div>
+		</div>
+
+		<!-- Posts Section -->
+		<div class='bg-white rounded-lg shadow-md p-5'>
+			<h2 class='text-xl font-semibold mb-3'>Posts</h2>
+			<div id='posts-container'>
+				<!-- Posts will be dynamically loaded here -->
+			</div>
+		</div>
+	</div>
+
+	<script src='assets/js/profile.js'></script>
 </body>
 </html>
