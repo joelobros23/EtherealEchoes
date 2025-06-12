@@ -117,6 +117,39 @@
 							postDiv.appendChild(authorDiv);
 							postDiv.appendChild(contentDiv);
 							postDiv.appendChild(timestampDiv);
+
+							// Comment Section
+							const commentSection = document.createElement('div');
+							commentSection.classList.add('mt-2');
+
+							// Comment Input
+							const commentInput = document.createElement('textarea');
+							commentInput.classList.add('w-full', 'h-12', 'p-2', 'border', 'rounded', 'mb-2');
+							commentInput.placeholder = 'Write a comment...';
+
+							// Comment Button
+							const commentButton = document.createElement('button');
+							commentButton.classList.add('bg-green-500', 'hover:bg-green-700', 'text-white', 'font-bold', 'py-2', 'px-4', 'rounded');
+							commentButton.textContent = 'Comment';
+							commentButton.addEventListener('click', function() {
+								const commentContent = commentInput.value.trim();
+								if (commentContent !== '') {
+									createComment(post.id, commentContent, postDiv);
+									commentInput.value = '';
+								}
+							});
+
+							commentSection.appendChild(commentInput);
+							commentSection.appendChild(commentButton);
+
+							// Comments Container
+							const commentsContainer = document.createElement('div');
+							commentsContainer.classList.add('mt-2', 'comments-container');
+							loadComments(post.id, commentsContainer);
+
+							commentSection.appendChild(commentsContainer);
+							postDiv.appendChild(commentSection);
+
 							postsContainer.appendChild(postDiv);
 						});
 					} else {
@@ -126,6 +159,60 @@
 				.catch(error => {
 					console.error('Error loading posts:', error);
 					postsContainer.textContent = 'An error occurred while loading posts.';
+				});
+			}
+
+			function createComment(postId, content, postDiv) {
+				fetch('api/create_comment.php', {
+					method: 'POST',
+					headers: {
+						'Content-Type': 'application/json'
+					},
+					body: JSON.stringify({ post_id: postId, content: content })
+				})
+				.then(response => response.json())
+				.then(data => {
+					if (data.success) {
+						const commentsContainer = postDiv.querySelector('.comments-container');
+						loadComments(postId, commentsContainer); // Reload comments
+					} else {
+						alert('Error creating comment: ' + data.message);
+					}
+				})
+				.catch(error => {
+					console.error('Error creating comment:', error);
+					alert('An error occurred while creating the comment.');
+				});
+			}
+
+			function loadComments(postId, commentsContainer) {
+				fetch('api/get_comments.php?post_id=' + postId)
+				.then(response => response.json())
+				.then(data => {
+					commentsContainer.innerHTML = ''; // Clear existing comments
+					if (data.success) {
+						data.comments.forEach(comment => {
+							const commentDiv = document.createElement('div');
+							commentDiv.classList.add('bg-gray-50', 'rounded', 'p-2', 'mb-1');
+
+							const authorSpan = document.createElement('span');
+							authorSpan.classList.add('font-semibold');
+							authorSpan.textContent = comment.username + ': ';
+
+							const contentSpan = document.createElement('span');
+							contentSpan.textContent = comment.content;
+
+							commentDiv.appendChild(authorSpan);
+							commentDiv.appendChild(contentSpan);
+							commentsContainer.appendChild(commentDiv);
+						});
+					} else {
+						commentsContainer.textContent = 'No comments yet.';
+					}
+				})
+				.catch(error => {
+					console.error('Error loading comments:', error);
+					commentsContainer.textContent = 'An error occurred while loading comments.';
 				});
 			}
 
