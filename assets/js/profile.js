@@ -57,7 +57,6 @@ document.addEventListener('DOMContentLoaded', () => {
             //Implement Follow/Unfollow button for other users profiles.
             const followButton = document.createElement('button');
             followButton.id = 'follow-button';
-            followButton.textContent = 'Follow';
             followButton.classList.add('button');
             profileContainer.appendChild(followButton);
 
@@ -67,16 +66,20 @@ document.addEventListener('DOMContentLoaded', () => {
                     const data = await response.json();
 
                     if (data.success) {
-                        const isFollowing = data.following.some(following => following.following_id === userId);
+                        const isFollowing = data.following.some(following => parseInt(following.following_id) === parseInt(userId));
                         followButton.textContent = isFollowing ? 'Unfollow' : 'Follow';
                         followButton.dataset.following = isFollowing;
                     }
                     else {
                         console.error("Couldn't retrieve following list.");
+                        followButton.textContent = 'Follow';
+                        followButton.dataset.following = false;
                     }
                 }
                 catch (error) {
                     console.error("Error checking follow status:", error);
+                    followButton.textContent = 'Follow';
+                    followButton.dataset.following = false;
                 }
             }
 
@@ -102,8 +105,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     if (data.success) {
                         //Toggle the button text and update dataset
-                        followButton.textContent = isFollowing ? 'Follow' : 'Unfollow';
-                        followButton.dataset.following = !isFollowing;
+                        const newFollowingState = !isFollowing;
+                        followButton.textContent = newFollowingState ? 'Unfollow' : 'Follow';
+                        followButton.dataset.following = newFollowingState;
                     }
                     else {
                         console.error(`Failed to ${isFollowing ? 'unfollow' : 'follow'} user:`, data.message);
